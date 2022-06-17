@@ -3,6 +3,7 @@ package com.expoupdateshack;
 import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.net.Uri;
 import androidx.annotation.NonNull;
 
 import com.facebook.react.PackageList;
@@ -16,9 +17,12 @@ import com.expoupdateshack.newarchitecture.MainApplicationReactNativeHost;
 
 import expo.modules.ApplicationLifecycleDispatcher;
 import expo.modules.ReactNativeHostWrapper;
+import expo.modules.updates.UpdatesController;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import javax.annotation.Nullable;
+
 
 public class MainApplication extends Application implements ReactApplication {
   private final ReactNativeHost mReactNativeHost = new ReactNativeHostWrapper(
@@ -42,6 +46,23 @@ public class MainApplication extends Application implements ReactApplication {
     protected String getJSMainModuleName() {
       return "index";
     }
+     @Override
+    protected @Nullable String getJSBundleFile() {
+      if (BuildConfig.DEBUG) {
+        return super.getJSBundleFile();
+      } else {
+        return UpdatesController.getInstance().getLaunchAssetFile();
+      }
+    }
+ 
+    @Override
+    protected @Nullable String getBundleAssetName() {
+      if (BuildConfig.DEBUG) {
+        return super.getBundleAssetName();
+      } else {
+        return UpdatesController.getInstance().getBundleAssetName();
+      }
+    }
   });
 
   private final ReactNativeHost mNewArchitectureNativeHost =
@@ -63,6 +84,10 @@ public class MainApplication extends Application implements ReactApplication {
     ReactFeatureFlags.useTurboModules = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED;
     SoLoader.init(this, /* native exopackage */ false);
 
+
+    if (!BuildConfig.DEBUG) {
+      UpdatesController.initialize(this);
+    }
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
     ApplicationLifecycleDispatcher.onApplicationCreate(this);
   }

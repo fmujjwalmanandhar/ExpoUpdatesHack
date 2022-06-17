@@ -1,10 +1,19 @@
 {
+  "name": "ExpoUpdatesHack",
+  "displayName": "ExpoUpdatesHack",
   "expo": {
+    "android":{
+      "jsEngine": "hermes"
+      },  
     "name": "ExpoUpdatesHack",
     "slug": "ExpoUpdatesHack",
     "version": "1.0.0",
+    "sdkVersion": "45.0.0",
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "updates":{
+      "enabled":false
+    }
   }
 }
